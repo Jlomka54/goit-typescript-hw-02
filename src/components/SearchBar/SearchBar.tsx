@@ -1,12 +1,17 @@
 import toast from "react-hot-toast";
 import css from "./SearchBar.module.css";
-import { useState } from "react";
+import { FC, FormEvent, useState } from "react";
 
-const SearchBar = ({ onSubmit }) => {
-  const [inputValue, setInputValue] = useState("");
+interface SearchBatProps {
+  onSubmit: (value: string) => void;
+}
 
-  const handleSubmit = (eve) => {
+const SearchBar: FC<SearchBatProps> = ({ onSubmit }) => {
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const handleSubmit = (eve: FormEvent<HTMLFormElement>) => {
     eve.preventDefault();
+
     if (inputValue.trim() === "") {
       toast.error("Please enter value");
       return;

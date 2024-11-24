@@ -1,9 +1,23 @@
 import ReactModal from "react-modal";
 import css from "./ImageModal.module.css";
+import { FC } from "react";
 
 ReactModal.setAppElement("#root");
+interface Photo {
+  urls: {
+    regular: string,
+  };
+  alt_description: string;
+  description?: string | null;
+}
 
-const ImageModal = ({ photo, isOpen, onClose }) => {
+interface ImageModalProps {
+  photo: Photo | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ImageModal: FC<ImageModalProps> = ({ photo, isOpen, onClose }) => {
   if (!photo) return null;
 
   return (

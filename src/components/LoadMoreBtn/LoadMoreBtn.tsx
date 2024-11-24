@@ -1,5 +1,10 @@
+import { FC } from "react";
 import css from "./LoadMoreBtn.module.css";
-const LoadMoreBtn = ({ loadMorePhoto }) => {
+interface LoadMoeProps {
+  loadMorePhoto: () => void;
+}
+
+const LoadMoreBtn: FC<LoadMoeProps> = ({ loadMorePhoto }) => {
   return (
     <div className={css.container}>
       <button className={css.button} onClick={loadMorePhoto} type="button">

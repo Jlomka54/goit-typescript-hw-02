@@ -1,24 +1,22 @@
-import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
-import SearchBar from "./components/SearchBar/SearchBar.jsx";
-
-import { FetchPhoto } from "./api.js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import toast, { Toaster } from "react-hot-toast";
-
-import Loader from "./components/Loader/Loader.jsx";
-import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn.jsx";
-import ImageModal from "./components/ImageModal/ImageModal.jsx";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage.jsx";
+import { FetchPhoto, Photo } from "./api";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+import SearchBar from "./components/SearchBar/SearchBar";
+import Loader from "./components/Loader/Loader";
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import ImageModal from "./components/ImageModal/ImageModal";
 
 const App = () => {
-  const [searchValue, setSearchValue] = useState(null);
-  const [photos, setPhotos] = useState([]);
-  const [isLoading, setIsLoader] = useState(false);
-  const [page, setPages] = useState(1);
-  const [totalPages, setTotalPages] = useState(null);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState(null);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [isLoading, setIsLoader] = useState<boolean>(false);
+  const [page, setPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const searchPhotoForGallery = async () => {
@@ -26,7 +24,7 @@ const App = () => {
       try {
         setError(null);
         setIsLoader(true);
-        const { data } = await FetchPhoto(searchValue, page);
+        const data = await FetchPhoto(searchValue, page);
 
         if (data.results.length === 0) {
           toast.error(`No information found matching your request`);
@@ -38,7 +36,11 @@ const App = () => {
         );
         setTotalPages(data.total_pages);
       } catch (error) {
-        setError(`Error fetching photos: ${error.message}`);
+        if (error instanceof Error) {
+          setError(`Error fetching photos: ${error.message}`);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setIsLoader(false);
       }
@@ -52,7 +54,6 @@ const App = () => {
       setTimeout(() => {
         window.scrollBy({
           top: window.innerHeight,
-
           behavior: "smooth",
         });
       }, 100);
@@ -63,18 +64,12 @@ const App = () => {
     setPages(page + 1);
   };
 
-  const onSubmit = (eve) => {
-    eve.preventDefault();
-    const form = eve.target.elements;
-    const userValue = form.searchValue.value.trim();
-
-    setSearchValue(userValue);
-
+  const onSubmit = (value: string) => {
+    setSearchValue(value);
     setPages(1);
-    form.reset();
   };
 
-  const openModal = (photo) => {
+  const openModal = (photo: Photo) => {
     setSelectedPhoto(photo);
     setIsModalOpen(true);
   };
@@ -86,19 +81,14 @@ const App = () => {
 
   return (
     <div>
-      <SearchBar onSubmit={onSubmit} />
-
+      <SearchBar onSubmit={onSubmit} />{" "}
       {error ? (
         <ErrorMessage message={error} />
       ) : (
         <>
           <ImageGallery galleryPhotos={photos} onImageClick={openModal} />
-          {isLoading && (
-            <div>
-              <Loader />
-            </div>
-          )}
-          {photos.length > 0 && page < totalPages && (
+          {isLoading && <Loader />}
+          {photos.length > 0 && page < (totalPages ?? 0) && (
             <LoadMoreBtn loadMorePhoto={loadMorePhoto} />
           )}
           {selectedPhoto && (
@@ -110,7 +100,6 @@ const App = () => {
           )}
         </>
       )}
-
       <Toaster position="top-center" reverseOrder={false} />
     </div>
   );

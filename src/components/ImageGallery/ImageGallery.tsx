@@ -1,8 +1,14 @@
-import ImageCard from "../ImageCard/ImageCard";
+import { FC } from "react";
 
 import css from "./ImageGallery.module.css";
+import { Photo } from "../../api";
+import ImageCard from "../ImageCard/ImageCard";
+interface GalleryPhotos {
+  galleryPhotos: Photo[];
+  onImageClick: (phot: Photo) => void;
+}
 
-const ImageGallery = ({ galleryPhotos, onImageClick }) => {
+const ImageGallery: FC<GalleryPhotos> = ({ galleryPhotos, onImageClick }) => {
   return (
     <>
       <ul className={css.imageGallery}>
@@ -11,7 +17,6 @@ const ImageGallery = ({ galleryPhotos, onImageClick }) => {
             <li className={css.imageGalleryItem} key={photo.id}>
               <ImageCard
                 onImageClick={() => onImageClick(photo)}
-                className={css.img}
                 src={photo.urls.small}
                 alt={photo.alt_description}
               />
