@@ -1,0 +1,10 @@
+.button {
+  background-color: rebeccapurple;
+  color: aliceblue;
+  padding: 10px;
+  margin: 0 auto;
+}
+.container {
+  display: flex;
+  justify-content: center;
+}
