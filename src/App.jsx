@@ -1,5 +1,5 @@
-import ImageGallery from "./components/ImageGallery/ImageGallery";
-import SearchBar from "./components/SearchBar/SearchBar";
+import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
+import SearchBar from "./components/SearchBar/SearchBar.jsx";
 
 import { FetchPhoto } from "./api.js";
 import { useEffect, useState } from "react";
